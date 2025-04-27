@@ -1,0 +1,41 @@
+{
+    "name": "makaveli/laravel-jwt-auth",
+    "description": "JWT authentication for Laravel",
+    "keywords": ["laravel", "framework"],
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^10.10|^11.0|^12.0",
+        "makaveli/laravel-logger": "1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "JWTAuth\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Ma1kaveli/laravel-query-builder"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Ma1kaveli/laravel-converter"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Ma1kaveli/laravel-logger"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "dont-discover": [],
+            "providers": [
+                "JWTAuth\\Providers\\JWTAuthServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
