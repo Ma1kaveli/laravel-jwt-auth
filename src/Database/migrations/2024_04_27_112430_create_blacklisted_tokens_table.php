@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelLogger\Database\Migrations;
+namespace Logger\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('token')->primary();
 
             $table->integer('expires_at');
-            
+
             $table->timestamps();
         });
     }

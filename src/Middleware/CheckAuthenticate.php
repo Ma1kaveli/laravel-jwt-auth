@@ -8,7 +8,7 @@ use Closure;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use LaravelLogger\Facades\LaravelLog;
+use Logger\Facades\LaravelLog;
 
 class CheckAuthenticate
 {
