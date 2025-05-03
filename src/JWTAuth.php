@@ -6,6 +6,7 @@ use JWTAuth\Helpers\JWTSlice;
 use JWTAuth\Helpers\JWTVerify;
 use JWTAuth\Interfaces\TokenStorageInterface;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 trait JWTAuth
@@ -174,7 +175,7 @@ trait JWTAuth
      *
      * @param string $token
      *
-     * @return null|array<string\string\'Model'|Authenticatable>
+     * @return null|array<string|Model|Authenticatable>
      */
     public function refreshToken(string $token): array|null {
         $data = $this->verify($token, 'refresh');
