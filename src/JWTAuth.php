@@ -178,17 +178,21 @@ trait JWTAuth
      * @return null|array<string|Model|Authenticatable>
      */
     public function refreshToken(string $token): array|null {
-        $data = $this->verify($token, 'refresh');
+        $payload = $this->verify($token, 'refresh');
 
-        if ($data['verify_fail'] || empty($data['user'])) return null;
+        if ($payload['verify_fail'] || empty($payload['user'])) return null;
 
+        $this->tokenStorage->addToBlacklist(
+            $token,
+            $payload['exp']
+        );
 
-        [ $accessToken, $refreshToken ] = $this->fromUser($data['user']);
+        [ $accessToken, $refreshToken ] = $this->fromUser($payload['user']);
 
         return [
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
-            'user' => $data['user']
+            'user' => $payload['user']
         ];
     }
 
