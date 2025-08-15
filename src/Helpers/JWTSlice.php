@@ -100,7 +100,7 @@ class JWTSlice
 
         [$subValue, $nameValue] = JWTHelpers::getPayloadDataFields($user);
 
-        $this->PAYLOAD_DATA['sub'] = $subValue;
+        $this->PAYLOAD_DATA['sub'] = (string) $subValue;
         $this->PAYLOAD_DATA['name'] = $nameValue;
         $this->PAYLOAD_DATA['exp'] = config('jwt.allow_infinite_ttl', false)
             ? config('infinite_ttl_fallback', 31536000)
