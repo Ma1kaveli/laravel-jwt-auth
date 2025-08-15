@@ -3,6 +3,7 @@
 namespace JWTAuth\Helpers;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class JWTSlice
@@ -116,16 +117,40 @@ class JWTSlice
      * @return string
      */
     public function generateSignature($header, $payload): string {
+        $algo = config('jwt.algo');
         $secretKey = config('jwt.private');
         $string = "$header.$payload";
 
-        return JWTCoder::base64_url_encode(
-            hash_hmac(
-                config('jwt.algo'),
-                $string,
-                $secretKey,
-                true
-            )
-        );
+        $algo = strtoupper($algo);
+
+        if (strpos($algo, 'HS') === 0) {
+            $hashAlgo = 'sha' . substr($algo, 2);
+            return JWTCoder::base64_url_encode(
+                hash_hmac($hashAlgo, $string, $secretKey, true)
+            );
+        } elseif (
+            strpos($algo, 'RS') === 0
+                || strpos($algo, 'EC') === 0
+                || strpos($algo, 'ES') === 0
+        ) {
+            // Обработка RSA и ECDSA алгоритмов
+            $opensslAlgo = JWTAlgo::getOpenSSLAlgo($algo);
+
+            // Генерация подписи
+            $success = openssl_sign($string, $signature, $secretKey, $opensslAlgo);
+            if (!$success) {
+                throw new Exception("OpenSSL sign error: " . openssl_error_string(), 400);
+            }
+
+            // Для ECDSA преобразуем подпись из DER формата
+            if (strpos($algo, 'EC') === 0 || strpos($algo, 'ES') === 0) {
+                $componentLength = JWTAlgo::getECDSAComponentLength($algo);
+                $signature = JWTAlgo::convertECSignature($signature, $componentLength);
+            }
+
+            return JWTCoder::base64_url_encode($signature);
+        }
+
+        throw new Exception("Unsupported algorithm: $algo");
     }
 }
